@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{{ topic.title }}</h1>
+<p>{{ topic.content }}</p>
+<small>Автор: {{ topic.author }}, Дата: {{ topic.created_at }}</small>
+<hr>
+<h2>Комментарии</h2>
+{% for comment in comments %}
+    <p><b>{{ comment.author }}</b>: {{ comment.content }}</p>
+    <small>Дата: {{ comment.created_at }}</small>
+    <hr>
+{% endfor %}
+
+{% if user.is_authenticated %}
+<h3>Добавить комментарий</h3>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Оставить комментарий</button>
+</form>
+{% else %}
+<p><a href="{% url 'login' %}">Войдите</a>, чтобы оставить комментарий.</p>
+{% endif %}
+
+<a href="{% url 'forum_home' %}">Назад к форуму</a>
+{% endblock %}

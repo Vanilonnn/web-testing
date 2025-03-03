@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Форум</h1>
+<a href="{% url 'create_topic' %}">Создать тему</a>
+<hr>
+{% for topic in topics %}
+    <h2><a href="{% url 'topic_detail' topic.id %}">{{ topic.title }}</a></h2>
+    <p>{{ topic.content|truncatewords:30 }}</p>
+    <small>Автор: {{ topic.author }}, Дата: {{ topic.created_at }}</small>
+    <hr>
+{% endfor %}
+{% endblock %}
