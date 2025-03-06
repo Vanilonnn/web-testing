@@ -1,9 +1,8 @@
-from django.contrib.auth import authenticate, login
-from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth import logout
+from django.contrib.auth import login, logout
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import Topic, Comment
+from .models import Topic
 from .forms import TopicForm, CommentForm
 
 def login_view(request):
@@ -25,19 +24,14 @@ def logout_view(request):
 
 def signup_view(request):
     if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('login')  # перенаправление на страницу входа
+    else:
+        form = UserCreationForm()
 
-        if User.objects.filter(username=username).exists():
-            return render(request, 'signup.html', {'error': 'Пользователь уже существует!'})
-
-        user = User(username=username)
-        user.set_password(password)  # Хешируем и сохраняем пароль
-        user.save()
-
-        return redirect('login')  # После регистрации перенаправляем на вход
-
-    return render(request, 'signup.html')
+    return render(request, 'signup.html', {'form': form})
 
 def home(request):
     return render(request, 'home.html')
